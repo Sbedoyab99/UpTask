@@ -30,7 +30,9 @@ class Usuario extends ActiveRecord {
 		}
 
 		if(!$this->email) {
-			self::$alertas['error'][] = 'El Email es Obligatorio';
+			self::$alertas['error'][] = 'El Email es obligatorio';
+		} else {
+			self::$alertas['error'][] = 'Formato de Email no Valido';
 		}
 
 		if(strlen($this->password) < 8) {
@@ -42,7 +44,30 @@ class Usuario extends ActiveRecord {
 		} else if($this->password !== $this->password2) {
 			self::$alertas['error'][] = 'Las contraseñas no coinciden. Inténtalo de nuevo.';
 		}
+		return self::$alertas;
+	}
 
+	public function validarEmail() {
+		if(!filter_var($this->email, FILTER_VALIDATE_EMAIL)) {
+			if(!$this->email) {
+				self::$alertas['error'][] = 'Ingresa un Email';
+			} else {
+				self::$alertas['error'][] = 'Formato de Email no Valido';
+			}
+		}
+		return self::$alertas;
+	}
+
+	public function validarPassword() {
+		if(strlen($this->password) < 8) {
+			if(!$this->password) {
+				self::$alertas['error'][] = 'La Contraseña es Obligatoria';
+			} else {
+				self::$alertas['error'][] = 'La Contraseña debe tener al menos 8 caracteres';
+			}
+		} else if($this->password !== $this->password2) {
+			self::$alertas['error'][] = 'Las contraseñas no coinciden. Inténtalo de nuevo.';
+		}
 		return self::$alertas;
 	}
 
