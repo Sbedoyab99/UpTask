@@ -26,37 +26,53 @@ class LoginController {
 	}
 
 	public static function crear(Router $router) {
-		echo 'Desde crear';
+		
 
 		if($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 		}
+
+		$router->render('auth/crear', [
+			'titulo' => 'Crea una Cuenta'
+		]);
 	}
 
 	public static function olvide(Router $router) {
-		echo 'Desde olvide';
+
 
 		if($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 		}
+
+		$router->render('auth/olvide', [
+			'titulo' => 'Olvide mi Contraseña'
+		]);
 	}
 
 	public static function reestablecer(Router $router) {
-		echo 'Desde reestablecer';
+
 
 		if($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 		}
+
+		$router->render('auth/reestablecer', [
+			'titulo' => 'Reestrablecer Contraseña'
+		]);
 	}
 
 	public static function mensaje(Router $router) {
-		echo 'Desde mensaje';
-
+		
+		$router->render('auth/mensaje', [
+			'titulo'=>'Cuenta Creada Correctamente'
+		]);
 	}
 
 	public static function confirmar(Router $router) {
-		echo 'Desde confirmar';
 
+		$router->render('auth/confirmar', [
+			'titulo'=>'Cuenta Confirmada Correctamente'
+		]);
 	}
 
 }

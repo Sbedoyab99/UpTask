@@ -1,7 +1,7 @@
-<div class="contenedor login">
+<div class="contenedor olvide">
 	<?php include_once __DIR__ . '/../templates/nombre-sitio.php' ?>
 	<div class="contenedor-sm">
-		<p class="descripcion-pagina">Iniciar Sesión</p>
+		<p class="descripcion-pagina">Recupera tu Acceso a UpTask</p>
 
 		<form class="formulario" method="POST">
 			<div class="campo">
@@ -14,20 +14,11 @@
 				/>
 			</div>
 
-			<div class="campo">
-				<label for="password">Contraseña</label>
-				<input 
-					type="password"
-					id="password"
-					placeholder="Tu Contraseña"
-					name="password"
-				/>
-			</div>
-			<input type="submit" class="boton" value="Iniciar Sesión">
+			<input type="submit" class="boton" value="Enviar Instrucciones">
 		</form>
 		<div class="acciones">
+			<a href="/">¿Ya tienes una cuenta? <b>Inicia Sesión</b></a>
 			<a href="/crear">¿Aún no tienes una cuenta? <b>Crea una</b></a>
-			<a href="/olvide"><i>¿Olvidaste tu Contraseña?</i></a>
 		</div>
 	</div>
 </div>
