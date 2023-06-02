@@ -13,7 +13,7 @@ class LoginController {
 		}
 
 		$router->render('auth/login', [
-			
+			'titulo' => 'Iniciar Sesion'
 		]);
 	}
 
