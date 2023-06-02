@@ -22,10 +22,10 @@ class Email {
 		$phpmailer->SMTPAuth = true;
 		$phpmailer->Port = 2525;
 		$phpmailer->Username = '569626f2581e86';
-		$phpmailer->Password = '********dc49';
+		$phpmailer->Password = 'cf53632763dc49';
 
 		$phpmailer->setFrom('UpTask.com', 'cuentas@uptask.com');
-		$phpmailer->addAddress($this->nombre, $this->email);
+		$phpmailer->addAddress($this->email, $this->nombre);
 		$phpmailer->Subject = 'Confirma tu Cuenta en UpTask';
 
 		$phpmailer->isHTML(true);
