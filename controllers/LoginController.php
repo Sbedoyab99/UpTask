@@ -2,6 +2,7 @@
 
 namespace Controllers;
 
+use Classes\Email;
 use Model\Usuario;
 use MVC\Router;
 
@@ -59,6 +60,10 @@ class LoginController {
 					$resultado = $usuario->guardar();
 					// Si se crea el usuario correctamente:
 					if($resultado) {
+						// Creamos un email con el token de confirmacion
+						$email = new Email($usuario->email, $usuario->nombre, $usuario->token);
+						// Enviamos el correo
+						$email->enviarConfirmacion();
 						// Redireccionamos a la pagina de mensaje
 						header('location: /mensaje');
 					}
@@ -105,9 +110,36 @@ class LoginController {
 	}
 
 	public static function confirmar(Router $router) {
+		// Recuperamos y sanitizamos el toque con $_GET
+		$token = s($_GET['token']);
+		// Si no se recupera un token redireccionamos
+		if(!$token) header('location: /');
+		// Buscamos el usuario al que corresponde el token recuperado
+		$usuario = Usuario::where('token', $token);
+		// Si no existe un usuario con ese token:
+		if(empty($usuario)) {
+			// Enviamos una alerta de error
+			Usuario::setAlerta('error', 'Token no Valido');
+		// Si se encontro un usuario
+		} else {
+			// Confirmamos el usuario
+			$usuario->confirmado = 1;
+			// Eliminamos el atributo 'password2'
+			unset($usuario->password2);
+			// Borramos el token
+			$usuario->token = null;
+			// Actualizamos la informacion del usuario
+			$usuario->guardar();
+			// Enviamos una alerta de exito
+			Usuario::setAlerta('exito', 'Cuenta Confirmada Correctamente');
+		}
+		// Recuperamos las alertas
+		$alertas = Usuario::getAlertas();
+		
 
 		$router->render('auth/confirmar', [
-			'titulo'=>'Cuenta Confirmada Correctamente'
+			'titulo' => 'Cuenta Confirmada Correctamente',
+			'alertas'=> $alertas
 		]);
 	}
 
