@@ -11,9 +11,14 @@ class DashboardController {
 		session_start();
 		// Verificamos que el usuario este autenticado
 		isAuth();
+		// Recupero el id de la sesion
+		$id = $_SESSION['id'];
+		// Recupero los proyectos que este usuario ha creado
+		$proyectos = Proyecto::belongsTo('propietarioid', $id);
 		// Renderizamos la pagina
 		$router->render('dashboard/index', [
-			'titulo' => 'Proyectos'
+			'titulo' => 'Proyectos',
+			'proyectos' => $proyectos
 		]);
 	}
 
