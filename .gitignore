@@ -4,5 +4,6 @@ vendor
 gulpfile.js
 package.json
 package-lock.json
+.eslintrc.js
 
 
