@@ -74,7 +74,6 @@ class LoginController {
 		// Creamos una nueva instancia de usuario vacia
 		$usuario = new Usuario;
 		$alertas = [];
-
 		// Cuando se envia el formulario:
 		if($_SERVER['REQUEST_METHOD'] === 'POST') {
 			// Sincronizamos la instancia de usuario con la info. del form.
