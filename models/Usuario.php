@@ -24,15 +24,36 @@ class Usuario extends ActiveRecord {
 		$this->confirmado = $args['confirmado'] ?? 0;
 	}
 
+	public function validarLogin() {
+		if(!filter_var($this->email, FILTER_VALIDATE_EMAIL)) {
+			if(!$this->email) {
+				self::$alertas['error'][] = 'El Email es obligatorio';
+			} else {
+				self::$alertas['error'][] = 'Formato de Email no Valido';
+			}
+		}
+
+		if(strlen($this->password) < 8) {
+			if(!$this->password) {
+				self::$alertas['error'][] = 'La Contraseña es Obligatoria';
+			} else {
+				self::$alertas['error'][] = 'La Contraseña debe tener al menos 8 caracteres';
+			}
+		}
+		return self::$alertas;
+	}
+
 	public function ValidarNuevaCuenta() {
 		if(!$this->nombre) {
 			self::$alertas['error'][] = 'El Nombre es Obligatorio';
 		}
 
-		if(!$this->email) {
-			self::$alertas['error'][] = 'El Email es obligatorio';
-		} else {
-			self::$alertas['error'][] = 'Formato de Email no Valido';
+		if(!filter_var($this->email, FILTER_VALIDATE_EMAIL)) {
+			if(!$this->email) {
+				self::$alertas['error'][] = 'Ingresa un Email';
+			} else {
+				self::$alertas['error'][] = 'Formato de Email no Valido';
+			}
 		}
 
 		if(strlen($this->password) < 8) {

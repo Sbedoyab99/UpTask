@@ -9,14 +9,55 @@ use MVC\Router;
 class LoginController {
 
 	public static function login(Router $router) {
-
-		
+		$alertas = [];
+		// Al oprimir el boton de iniciar sesion:
 		if($_SERVER['REQUEST_METHOD'] === 'POST') {
-			
+			// Creamos una nueva instancia de usuario
+			// con el correo y la contraseña suministrada
+			$usuario = new Usuario($_POST);
+			// validamos que la informacion este completa
+			$alertas = $usuario->validarLogin();
+			// Si no hay alertas:
+			if(empty($alertas)) {
+				// Verificamos que el usuario exista
+				$usuario = Usuario::where('email', $usuario->email);
+				// Si existe el usuario:
+				if($usuario) {
+					// Si el usuario no esta confirmado
+					if(!$usuario->confirmado) {
+						// Enviamos una alerta de error
+						Usuario::setAlerta('error', 'El Usuario no esta confirmado');
+					// El usuario existe y esta confirmado:
+					} else {
+						// Si la contraseña es correcta:
+						if(password_verify($_POST['password'], $usuario->password)) {
+							// Iniciamos sesion
+							session_start();
+							// Llenamos los campos de $_SESSION con informacion relevante
+							$_SESSION['id'] = $usuario->id;
+							$_SESSION['nombre'] = $usuario->nombre;
+							$_SESSION['email'] = $usuario->email;
+							$_SESSION['login'] = true;
+							// Redireccionamos
+							header('location: /proyectos');
+						// Si la contraseña no es correcta
+						} else {
+							Usuario::setAlerta('error', 'La contraseña es incorrecta');
+						}
+					}
+				// Si el usuario no existe:	
+				} else {
+					// Envio una alerta de error
+					Usuario::setAlerta('error', 'El Usuario no existe');
+				}
+			}
 		}
+		// Recuperamos las alertas
+		$alertas = Usuario::getAlertas();
 		// Renderizamos la pagina
 		$router->render('auth/login', [
-			'titulo' => 'Iniciar Sesion'
+			'titulo' => 'Iniciar Sesion',
+			'alertas' => $alertas
 		]);
 	}
 
@@ -208,13 +249,13 @@ class LoginController {
 			// Actualizamos la informacion del usuario
 			$usuario->guardar();
 			// Enviamos una alerta de exito
-			Usuario::setAlerta('exito', 'Cuenta Confirmada Correctamente');
+			Usuario::setAlerta('exito', 'Cuenta Verificada Correctamente');
 		}
 		// Recuperamos las alertas
 		$alertas = Usuario::getAlertas();
 		// Renderizamos la pagina
 		$router->render('auth/confirmar', [
-			'titulo' => 'Cuenta Confirmada Correctamente',
+			'titulo' => 'Cuenta Verificada Correctamente',
 			'alertas'=> $alertas
 		]);
 	}
