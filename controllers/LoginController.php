@@ -39,7 +39,7 @@ class LoginController {
 							$_SESSION['email'] = $usuario->email;
 							$_SESSION['login'] = true;
 							// Redireccionamos
-							header('location: /proyectos');
+							header('location: /dashboard');
 						// Si la contraseña no es correcta
 						} else {
 							Usuario::setAlerta('error', 'La contraseña es incorrecta');
@@ -61,12 +61,13 @@ class LoginController {
 		]);
 	}
 
-	public static function logout(Router $router) {
-		echo 'Desde logout';
-
-		if($_SERVER['REQUEST_METHOD'] === 'POST') {
-
-		}
+	public static function logout() {
+		// Iniciamos una sesion
+		session_start();
+		// Reseteamos el contenido de $_SESSION
+		$_SESSION = [];
+		// Redirigimos a la pagina de login
+		header('location: /');
 	}
 
 	public static function crear(Router $router) {
