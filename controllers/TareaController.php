@@ -26,7 +26,7 @@ class TareaController {
 	public static function crear() {
 		// Inicio la sesion
 		session_start();
-		// Si el estado del serividor es POST
+		// Si el estado del servidor es POST
 		if($_SERVER['REQUEST_METHOD'] === 'POST') {
 			// Recupero el proyecto con la informacion de $_POST
 			$proyecto = Proyecto::where('url', $_POST['url']);
@@ -55,13 +55,72 @@ class TareaController {
 		}
 	}
 	public static function actualizar() {
+		// Inicio Sesion
+		session_start();
+		// El servidor solo recibe post
 		if($_SERVER['REQUEST_METHOD'] === 'POST') {
-			
+			// Validar que el proyecto existe
+			$proyecto = Proyecto::where('url', $_POST['url']);
+			// Si no hay un proyecto o el usuario no puede modificar el proyecto:
+			if(!$proyecto || $proyecto->propietarioid !== $_SESSION['id']) {
+				$respuesta = [
+					'tipo' => 'error',
+					'mensaje' => 'Hubo un error al actualizar la tarea'
+				];
+				echo json_encode($respuesta);
+			// Si todo esta bien
+			} else {
+				// Creo una nueva instancia de tarea con los datos de $_POST
+				$tarea = new Tarea($_POST);
+				$tarea->proyectoid = $proyecto->id;
+				// Guardo la tarea en la base de datos
+				$resultado = $tarea->guardar();
+				// Si se guarda correctamente:
+				if($resultado) {
+					$respuesta = [
+						'tarea' => $tarea,
+						'tipo' => 'exito',
+						'proyectoid' =>$proyecto->id,
+						'id' => $tarea->id,
+						'mensaje' => 'Actualizado correctamente'
+					];
+					echo json_encode(['respuesta' => $respuesta]);
+				}
+			}
 		}
 	}
 	public static function eliminar() {
+		// Inicio Sesion
+		session_start();
+		// El servidor solo recibe post
 		if($_SERVER['REQUEST_METHOD'] === 'POST') {
-			
+			// Validar que el proyecto existe
+			$proyecto = Proyecto::where('url', $_POST['url']);
+			// Si no hay un proyecto o el usuario no puede modificar el proyecto:
+			if(!$proyecto || $proyecto->propietarioid !== $_SESSION['id']) {
+				$respuesta = [
+					'tipo' => 'error',
+					'mensaje' => 'Hubo un error al eliminar la tarea'
+				];
+				echo json_encode($respuesta);
+			// Si todo esta bien
+			} else {
+				// Creo una nueva instancia de tarea con los datos de $_POST
+				$tarea = new Tarea($_POST);
+				$tarea->proyectoid = $proyecto->id;
+				// Guardo la tarea en la base de datos
+				$resultado = $tarea->eliminar();
+				// Si se guarda correctamente:
+				if($resultado) {
+					$respuesta = [
+						'tipo' => 'exito',
+						'mensaje' => 'Eliminado correctamente',
+						'resultado' => $resultado
+					];
+					echo json_encode($respuesta);
+				}
+			}
 		}
 	}
 }
+
