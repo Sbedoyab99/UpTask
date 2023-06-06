@@ -7,7 +7,21 @@ use Model\Tarea;
 
 class TareaController {
 	public static function index() {
-		
+		// Inicio la Sesion
+		session_start();
+		// Recupero el id del proyecto (url)
+		$url = $_GET['id'];
+		// Si no hay id: Redirecciono
+		if(!$url) header('location: /dashboard');
+		// Recupero el proyecto con la url
+		$proyecto = Proyecto::where('url', $url);
+		// Si no se encuentra un proyecto con esa url
+		// o el usuario no tiene permisos: Redirecciono
+		if(!$proyecto || $proyecto->propietarioid !== $_SESSION['id']) header('location: /404');
+		// Busco las tareas relacionadas a ese proyecto
+		$tareas = Tarea::belongsTo('proyectoid', $proyecto->id);
+		// Convierto las tareas a json (objeto php -> json)
+		echo json_encode(['tareas' => $tareas]);
 	}
 	public static function crear() {
 		// Inicio la sesion
@@ -33,7 +47,8 @@ class TareaController {
 				$respuesta = [
 					'tipo' => 'exito',
 					'mensaje' => 'Tarea Creada Correctamente',
-					'id' => $resultado['id']
+					'id' => $resultado['id'],
+					'proyectoid' => $proyecto->id
 				];
 				echo json_encode($respuesta);
 			}
