@@ -11,6 +11,9 @@ class Usuario extends ActiveRecord {
 	public $email;
 	public $password;
 	public $password2;
+	public $password_actual;
+	public $password_nuevo;
+	public $password_nuevo2;
 	public $token;
 	public $confirmado;
 
@@ -90,6 +93,46 @@ class Usuario extends ActiveRecord {
 			self::$alertas['error'][] = 'Las contraseñas no coinciden. Inténtalo de nuevo.';
 		}
 		return self::$alertas;
+	}
+
+	public function validarPerfil() {
+		if(!$this->nombre) {
+			self::$alertas['error'][] = 'El Nombre es Obligatorio';
+		}
+
+		if(!filter_var($this->email, FILTER_VALIDATE_EMAIL)) {
+			if(!$this->email) {
+				self::$alertas['error'][] = 'Ingresa un Email';
+			} else {
+				self::$alertas['error'][] = 'Formato de Email no Valido';
+			}
+		}
+		return self::$alertas;
+	}
+
+	public function nuevo_password() {
+		if(!$this->password_actual) {
+			self::$alertas['error'][] = 'La Contraseña actual no puede ir vacia';
+		}
+		
+		if(strlen($this->password_nuevo) < 8) {
+			if(!$this->password_nuevo) {
+				self::$alertas['error'][] = 'La Contraseña nueva no puede ir vacia';
+			} else {
+				self::$alertas['error'][] = 'La nueva contraseña debe contener al menos 8 caracteres';
+			}
+		} else if(($this->password_nuevo !== $this->password_nuevo2)) {
+			if(!$this->password_nuevo2) {
+				self::$alertas['error'][] = 'Debes repetir la nueva contraseña';
+			} else {
+				self::$alertas['error'][] = 'Las Contraseñas no coinciden';
+			}
+		}
+		return self::$alertas;
+	}
+
+	public function comprobarPassword() {
+		return password_verify($this->password_actual, $this->password);
 	}
 
 	public function hashPassword() {
